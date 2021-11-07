@@ -12,7 +12,7 @@ namespace Promotion.UI.Services
         private readonly IConfiguration _configuration;
         public EngineService(IConfiguration configuration)
         {
-            configuration = _configuration;
+            _configuration = configuration;
         }
         public Cart ProcessPromotions(Cart cart)
         {

@@ -7,6 +7,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Promotion.UI.Interfaces;
+using Promotion.UI.Rules;
+using Promotion.UI.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,6 +29,8 @@ namespace Promotion.UI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSingleton<IEngineService, EngineService>();
+            services.AddSingleton<IRule, NItemsFixedPrice>();
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
