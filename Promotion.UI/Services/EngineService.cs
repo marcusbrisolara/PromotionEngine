@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Promotion.UI.Services
 {
-    public class EngineService
+    public class EngineService : IEngineService
     {
         public Cart ProcessPromotions(Cart cart)
         {
