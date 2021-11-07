@@ -1,4 +1,5 @@
-﻿using Promotion.UI.Entities;
+﻿using Microsoft.Extensions.Configuration;
+using Promotion.UI.Entities;
 using Promotion.UI.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,27 +8,13 @@ namespace Promotion.UI.Rules
 {
     public class NItemsFixedPrice : IRule
     {
+        private readonly IConfiguration _configuration;
         private IEnumerable<NItemsFixedPriceParameters> _promotions;
 
-        public NItemsFixedPrice()
+        public NItemsFixedPrice(IConfiguration configuration)
         {
-            _promotions = new List<NItemsFixedPriceParameters>
-            {
-                new NItemsFixedPriceParameters 
-                { 
-                    NumberOfItems = 3,
-                    ItemId = 'A',
-                    FixedPrice = 130,
-                    Description = "3 A's for 130"
-                },
-                new NItemsFixedPriceParameters
-                {
-                    NumberOfItems = 2,
-                    ItemId = 'B',
-                    FixedPrice = 45,
-                    Description = "2 B's for 45"
-                }
-            };
+            _configuration = configuration;
+            _promotions = _configuration.GetSection(nameof(NItemsFixedPriceParameters)).Get<List<NItemsFixedPriceParameters>>();
         }   
 
         public Cart Apply(Cart cart)
