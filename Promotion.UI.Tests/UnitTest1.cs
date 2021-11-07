@@ -1,4 +1,5 @@
 using NUnit.Framework;
+using Promotion.UI.Services;
 
 namespace Promotion.UI.Tests
 {
@@ -12,7 +13,7 @@ namespace Promotion.UI.Tests
         [Test]
         public void ScenarioA()
         {
-            PromotionEngineService engineService = new PromotionEngineService();
+            EngineService engineService = new EngineService();
             var cart = engineService.ProcessPromotions(TestData.ScenarioA_Cart);
 
             Assert.AreEqual(100, cart.FinalTotalPrice);
@@ -21,7 +22,7 @@ namespace Promotion.UI.Tests
         [Test]
         public void ScenarioB()
         {
-            PromotionEngineService engineService = new PromotionEngineService();
+            EngineService engineService = new EngineService();
             var cart = engineService.ProcessPromotions(TestData.ScenarioB_Cart);
 
             Assert.AreEqual(370, cart.FinalTotalPrice);
@@ -30,7 +31,7 @@ namespace Promotion.UI.Tests
         [Test]
         public void ScenarioC()
         {
-            PromotionEngineService engineService = new PromotionEngineService();
+            EngineService engineService = new EngineService();
             var cart = engineService.ProcessPromotions(TestData.ScenarioC_Cart);
 
             Assert.AreEqual(280, cart.FinalTotalPrice);
@@ -39,7 +40,7 @@ namespace Promotion.UI.Tests
         [Test]
         public void EmptyCart()
         {
-            PromotionEngineService engineService = new PromotionEngineService();
+            EngineService engineService = new EngineService();
             var cart = engineService.ProcessPromotions(TestData.EmptyCart);
 
             Assert.AreEqual(0, cart.FinalTotalPrice);
