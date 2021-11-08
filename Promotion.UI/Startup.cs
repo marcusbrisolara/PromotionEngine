@@ -32,6 +32,7 @@ namespace Promotion.UI
             services.AddSingleton<IEngineService, EngineService>();
             services.AddSingleton<IRule, NItemsFixedPrice>();
             services.AddSingleton<IRule, OneAndTwoFixedPrice>();
+            services.AddSingleton<IRule, PercentageOfItemUnitPrice>();
 
             services.AddControllers();
             services.AddSwaggerGen(c =>

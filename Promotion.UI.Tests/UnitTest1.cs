@@ -49,6 +49,15 @@ namespace Promotion.UI.Tests
         }
 
         [Test]
+        public void ScenarioD_PromotionsApplied()
+        {
+            EngineService engineService = new EngineService(_configuration);
+            var cart = engineService.ProcessPromotions(TestData.ScenarioD_Cart);
+
+            Assert.AreEqual(325, cart.FinalTotalPrice);
+        }
+
+        [Test]
         public void EmptyCart()
         {
             EngineService engineService = new EngineService(_configuration);

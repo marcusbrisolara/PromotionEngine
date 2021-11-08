@@ -24,6 +24,11 @@ namespace Promotion.UI.Tests
             CartItems = ScenarioC_CartItems
         };
 
+        internal static Cart ScenarioD_Cart = new Cart
+        {
+            CartItems = ScenarioD_CartItems
+        };
+
         internal static Cart EmptyCart = new Cart();
 
         static List<CartItem> ScenarioA_CartItems => new List<CartItem>
@@ -46,6 +51,14 @@ namespace Promotion.UI.Tests
             new CartItem{ Id = 'B', Quantity = 5 , UnitPrice = 30 },
             new CartItem{ Id = 'C', Quantity = 1 , UnitPrice = 20 },
             new CartItem{ Id = 'D', Quantity = 1 , UnitPrice = 15 }
+        };
+
+        static List<CartItem> ScenarioD_CartItems => new List<CartItem>
+        {
+            new CartItem{ Id = 'A', Quantity = 3 , UnitPrice = 50 },
+            new CartItem{ Id = 'B', Quantity = 5 , UnitPrice = 30 },
+            new CartItem{ Id = 'C', Quantity = 2 , UnitPrice = 20 },
+            new CartItem{ Id = 'D', Quantity = 4 , UnitPrice = 15 }
         };
 
         internal static List<NItemsFixedPriceParameters> NItemsFixedPriceParameters_Data => new List<NItemsFixedPriceParameters> 
