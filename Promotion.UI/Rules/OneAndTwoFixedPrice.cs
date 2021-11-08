@@ -12,7 +12,11 @@ namespace Promotion.UI.Rules
     {
         private readonly IConfiguration _configuration;
         private IEnumerable<OneAndTwoFixedPriceParameters> _promotions;
-        private bool arePromotionsMutuallyExclusive = false;
+        private char[] _itemsOnPromotion;
+        private int _qtyAvailableFirstItem;
+        private int _qtyAvailableSecondItem;
+        private CartItem _firstItemPromotion;
+        private CartItem _secondItemPromotion;
 
         public OneAndTwoFixedPrice(IConfiguration configuration)
         {
@@ -27,17 +31,14 @@ namespace Promotion.UI.Rules
             {
                 if (ShouldApply(cart, promotion))
                 {
-                    var firstItemPromotion = cart.CartItems.FirstOrDefault(x => x.Id == promotion.FirstItemId);
-                    var secondItemPromotion = cart.CartItems.FirstOrDefault(x => x.Id == promotion.SecondItemId);
-
-                    var qtyFirstItem = cart.CartItems.Count(x => x.Id == promotion.FirstItemId);
-                    var qtySecondItem = cart.CartItems.Count(x => x.Id == promotion.SecondItemId);
-                    var qtyPromotionPrice = Math.Min(qtyFirstItem, qtySecondItem);
+                    var qtyPromotionPrice = Math.Min(_qtyAvailableFirstItem, _qtyAvailableSecondItem);
 
                     var discount =
-                        (qtyPromotionPrice * firstItemPromotion.UnitPrice + qtyPromotionPrice * secondItemPromotion.UnitPrice) - qtyPromotionPrice * promotion.FixedPrice;
-
-                    cart.AppliedPromotions.Add(new AppliedPromotion(promotion.Description, discount));
+                        (qtyPromotionPrice * _firstItemPromotion.UnitPrice + qtyPromotionPrice * _secondItemPromotion.UnitPrice) - qtyPromotionPrice * promotion.FixedPrice;
+                    
+                    _itemsOnPromotion = new[] { _firstItemPromotion.Id, _secondItemPromotion.Id };
+                    
+                    cart.AppliedPromotions.Add(new AppliedPromotion(promotion.Description, discount, _itemsOnPromotion, qtyPromotionPrice));
                 }
             }
             return cart;
@@ -45,9 +46,16 @@ namespace Promotion.UI.Rules
 
         private bool ShouldApply(Cart cart, OneAndTwoFixedPriceParameters promotion)
         {
-            return arePromotionsMutuallyExclusive
-                ? (cart.AppliedPromotions.Count == 0) && (cart.CartItems.Any(x => x.Id == promotion.FirstItemId) && cart.CartItems.Any(x => x.Id == promotion.SecondItemId))
-                : (cart.CartItems.Any(x => x.Id == promotion.FirstItemId) && cart.CartItems.Any(x => x.Id == promotion.SecondItemId));
+            _firstItemPromotion = cart.CartItems.FirstOrDefault(x => x.Id == promotion.FirstItemId);
+            if (_firstItemPromotion != null)
+                _qtyAvailableFirstItem = _firstItemPromotion.Quantity - cart.AppliedPromotions.Where(x => x.Items.Contains(_firstItemPromotion.Id)).Sum(s => s.Quantity);
+            
+            _secondItemPromotion = cart.CartItems.FirstOrDefault(x => x.Id == promotion.SecondItemId);            
+            if(_secondItemPromotion != null)
+                _qtyAvailableSecondItem = _secondItemPromotion.Quantity - cart.AppliedPromotions.Where(x => x.Items.Contains(_secondItemPromotion.Id)).Sum(s => s.Quantity);
+
+            return (_qtyAvailableFirstItem > 0 && _qtyAvailableSecondItem > 0);
+                
         }
     }
 }

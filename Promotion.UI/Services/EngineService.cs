@@ -16,6 +16,8 @@ namespace Promotion.UI.Services
         }
         public Cart ProcessPromotions(Cart cart)
         {
+            if (cart == null) return cart;
+
             var ruleType = typeof(IRule);
             IEnumerable<IRule> rules = this.GetType().Assembly.GetTypes()
                 .Where(p => ruleType.IsAssignableFrom(p) && !p.IsInterface)

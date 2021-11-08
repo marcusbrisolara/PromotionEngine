@@ -10,11 +10,14 @@ namespace Promotion.UI.Rules
     {
         private readonly IConfiguration _configuration;
         private IEnumerable<NItemsFixedPriceParameters> _promotions;
+        private char[] _itemsOnPromotion;
+        private int _itemsAvailable;
+        private CartItem _itemPromotion;
 
         public NItemsFixedPrice(IConfiguration configuration)
         {
             _configuration = configuration;
-            _promotions = _configuration.GetSection(nameof(NItemsFixedPriceParameters)).Get<List<NItemsFixedPriceParameters>>();
+            _promotions = _configuration.GetSection("NItemsFixedPriceParameters").Get<List<NItemsFixedPriceParameters>>() ?? new List<NItemsFixedPriceParameters>();
         }   
 
         public Cart Apply(Cart cart)
@@ -23,13 +26,13 @@ namespace Promotion.UI.Rules
             {
                 if (ShouldApply(cart, promotion))
                 {
-                    var itemPromotion = cart.CartItems.FirstOrDefault(x => x.Id == promotion.ItemId);
-                    var qtyPromotionPrice = itemPromotion.Quantity / promotion.NumberOfItems;
-                    var qtyNormalPrice = itemPromotion.Quantity - (qtyPromotionPrice * promotion.NumberOfItems);
+                    var qtyPromotionPrice = _itemsAvailable / promotion.NumberOfItems;
+                    var qtyNormalPrice = _itemPromotion.Quantity - (qtyPromotionPrice * promotion.NumberOfItems);
 
-                    var discount = itemPromotion.TotalPrice - ((qtyPromotionPrice * promotion.FixedPrice) + qtyNormalPrice * itemPromotion.UnitPrice);
+                    var discount = _itemPromotion.TotalPrice - ((qtyPromotionPrice * promotion.FixedPrice) + qtyNormalPrice * _itemPromotion.UnitPrice);
 
-                    cart.AppliedPromotions.Add(new AppliedPromotion(promotion.Description, discount));
+                    _itemsOnPromotion = new[] { _itemPromotion.Id };
+                    cart.AppliedPromotions.Add(new AppliedPromotion(promotion.Description, discount, _itemsOnPromotion, qtyPromotionPrice * promotion.NumberOfItems));
                 }
             }
             return cart;
@@ -37,7 +40,11 @@ namespace Promotion.UI.Rules
 
         private bool ShouldApply(Cart cart, NItemsFixedPriceParameters promotion)
         {
-            return cart.CartItems.FirstOrDefault(x => x.Id == promotion.ItemId).Quantity >= promotion.NumberOfItems;
+            _itemPromotion = cart.CartItems.FirstOrDefault(x => x.Id == promotion.ItemId);
+            if(_itemPromotion != null)
+                _itemsAvailable = _itemPromotion.Quantity - cart.AppliedPromotions.Where(x => x.Items.Contains(_itemPromotion.Id)).Sum(s => s.Quantity);
+
+            return _itemsAvailable >= promotion.NumberOfItems;
         }
     }
 }
