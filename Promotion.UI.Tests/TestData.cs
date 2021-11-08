@@ -47,5 +47,16 @@ namespace Promotion.UI.Tests
             new CartItem{ Id = 'C', Quantity = 1 , UnitPrice = 20 },
             new CartItem{ Id = 'D', Quantity = 1 , UnitPrice = 15 }
         };
+
+        internal static List<NItemsFixedPriceParameters> NItemsFixedPriceParameters_Data => new List<NItemsFixedPriceParameters> 
+        {
+            new NItemsFixedPriceParameters{ NumberOfItems = 3, ItemId = 'A', FixedPrice = 130, Description = "3 A's for 130" },
+            new NItemsFixedPriceParameters{ NumberOfItems = 2, ItemId = 'B', FixedPrice = 45, Description = "2 B's for 45" },
+        };
+
+        internal static List<OneAndTwoFixedPriceParameters> OneAndTwoFixedPriceParameters => new List<OneAndTwoFixedPriceParameters>
+        {
+            new OneAndTwoFixedPriceParameters{ FirstItemId = 'C', SecondItemId = 'D', FixedPrice = 30, Description = "C + D = 30" }
+        };
     }
 }
